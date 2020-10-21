@@ -1048,8 +1048,16 @@ use strict 指的是严格运行模式，在这种模式对 js 的使用添加�
 详细资料可以参考：
 [《js 判断一个对象是否属于某一类》](https://blog.csdn.net/haitunmin/article/details/78418522)
 
-#### 49. instanceof 的作用？
+#### 49. instanceof 的作用？和 typeof 有什么区别？
 
+**instanceof** 用于判断一个变量是否某个对象的实例
+
+**typeof** 是一个一元运算，放在一个运算数之前，运算数可以是任意类型。
+typeof 一般只能返回如下几个结果：
+>number， string， boolean， object(NULL， 数组，对象)， function(函数)， undefined
+
+使用上的区别：  
+在使用 typeof 运算符时采用引用类型存储值会出现一个问题，无论引用的是什么类型的对象，它都返回 “object”。这就需要用到instanceof来检测某个对象是不是另一个对象的实例。
 ```js
 // instanceof 运算符用于判断构造函数的 prototype 属性是否出现在对象的原型链中的任何位置。
 // 实现：
@@ -2078,7 +2086,7 @@ UTF-8 是一种对 Unicode 的编码方式，它是一种变长的编码方式�
 [《字符编码详解》](https://blog.51cto.com/polaris/377468)
 [《字符编码笔记：ASCII，Unicode 和 UTF-8》](http://www.ruanyifeng.com/blog/2007/10/ascii_unicode_and_utf-8.html)
 
-#### 95. js 的事件循环是什么？
+#### 95. js 的事件循环（event loop）是什么？ 
 
 相关知识点：
 
@@ -3670,3 +3678,65 @@ function findMostWord(article) {
   return maxWord + "  " + maxNum;
 }
 ```
+
+#### 175. Fetxh, Promise和XHR
+
+XMLHttpRequest 是一个设计粗糙的 API，不符合关注分离（Separation of Concerns）的原则，配置和调用方式非常混乱，而且基于事件的异步模型写起来也没有现代的 Promise，generator/yield，async/await 友好。
+
+XHR发送json请求
+```js
+var xhr = new XMLHttpRequest();
+xhr.open('GET', url);
+xhr.responseType = 'json';
+  
+xhr.onload = function() {
+  console.log(xhr.response);
+};
+  
+xhr.onerror = function() {
+  console.log("Oops, error");
+};
+  
+xhr.send();
+```
+
+使用Fetch
+```js
+fetch(url).then(function(response) {
+  return response.json();
+}).then(function(data) {
+  console.log(data);
+}).catch(function(e) {
+  console.log("Oops, error");
+});
+``` 
+
+使用 ES6 的 箭头函数 后：
+```js
+fetch(url).then(response => response.json())
+  .then(data => console.log(data))
+  .catch(e => console.log("Oops, error", e))
+```
+
+**Fetch 与 Promise 的区别**  
+前者是请求方法，后者是一个对象
+
+Fetch javascript 异步请求 
+```js
+ fetch(url,option)
+ .then((response) => {
+     // do something
+ });
+```
+Promise 
+一种JavaScript对象，用来异步运算。 
+```js
+new Promise( /* executor */  (resolve, reject) => {
+    //
+});
+```
+Promise 有三个状态
+
+    pending : 初始化状态，没有完成或拒绝
+    fulfilled: 操作成功完成
+    rejected: 操作失败
